@@ -329,8 +329,52 @@ Feature: sharees
     And "exact emails" sharees returned is empty
     And "emails" sharees returned is empty
 
+  Scenario: Search user by secondary e-mail address when sharebymail app is disabled
+    Given app "sharebymail" enabled state will be restored once the scenario finishes
+    And sending "DELETE" to "/cloud/apps/sharebymail"
+    And app "sharebymail" is disabled
+    And As an "test"
+    When getting sharees for
+      | search    | sharee2@secondary.com |
+      | itemType  | file |
+      | shareType | 0 |
+    Then the OCS status code should be "100"
+    And the HTTP status code should be "200"
+    # UserPlugin only searches in the system e-mail address, but not in
+    # secondary addresses.
+    And "exact users" sharees returned is empty
+    And "users" sharees returned is empty
+    And "exact groups" sharees returned is empty
+    And "groups" sharees returned is empty
+    And "exact remotes" sharees returned is empty
+    And "remotes" sharees returned is empty
+    And "exact emails" sharees returned is empty
+    And "emails" sharees returned is empty
+
   Scenario: Search user by secondary e-mail address without exact match
     Given As an "test"
+    When getting sharees for
+      | search    | sharee2@secondary.c |
+      | itemType  | file |
+      | shareType | 0 |
+    Then the OCS status code should be "100"
+    And the HTTP status code should be "200"
+    And "exact users" sharees returned is empty
+    # UserPlugin only searches in the system e-mail address, but not in
+    # secondary addresses.
+    And "users" sharees returned is empty
+    And "exact groups" sharees returned is empty
+    And "groups" sharees returned is empty
+    And "exact remotes" sharees returned is empty
+    And "remotes" sharees returned is empty
+    And "exact emails" sharees returned is empty
+    And "emails" sharees returned is empty
+
+  Scenario: Search user by secondary e-mail address without exact match when sharebymail app is disabled
+    Given app "sharebymail" enabled state will be restored once the scenario finishes
+    And sending "DELETE" to "/cloud/apps/sharebymail"
+    And app "sharebymail" is disabled
+    And As an "test"
     When getting sharees for
       | search    | sharee2@secondary.c |
       | itemType  | file |
@@ -364,6 +408,26 @@ Feature: sharees
     And "remotes" sharees returned is empty
     And "exact emails" sharees returned are
       | sharee2@unknown.com | 4 | sharee2@unknown.com |
+    And "emails" sharees returned is empty
+
+  Scenario: Search e-mail when sharebymail app is disabled
+    Given app "sharebymail" enabled state will be restored once the scenario finishes
+    And sending "DELETE" to "/cloud/apps/sharebymail"
+    And app "sharebymail" is disabled
+    And As an "test"
+    When getting sharees for
+      | search    | sharee2@unknown.com |
+      | itemType  | file |
+      | shareType | 4 |
+    Then the OCS status code should be "100"
+    And the HTTP status code should be "200"
+    And "exact users" sharees returned is empty
+    And "users" sharees returned is empty
+    And "exact groups" sharees returned is empty
+    And "groups" sharees returned is empty
+    And "exact remotes" sharees returned is empty
+    And "remotes" sharees returned is empty
+    And "exact emails" sharees returned is empty
     And "emails" sharees returned is empty
 
   Scenario: Search e-mail matching system e-mail address of user
