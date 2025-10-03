@@ -86,6 +86,6 @@ USER devcontainer
 
 # NVM
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-RUN bash --login -i -c 'source /home/devcontainer/.bashrc && nvm install 20'
+RUN bash --login -i -c 'source /home/devcontainer/.bashrc && nvm install 22'
 
 WORKDIR /var/www/html
